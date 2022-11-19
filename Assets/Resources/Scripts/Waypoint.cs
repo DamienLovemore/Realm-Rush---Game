@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class Waypoint : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [Tooltip("Determines if this tile is allowed to build a tower")]
+    [SerializeField] private bool isPlaceable;
 
-    // Update is called once per frame
-    void Update()
+    //Event that happens when the player clicks on the game object that
+    //this script is attached to
+    void OnMouseDown()
     {
-        
+        if(this.isPlaceable)
+        {
+            Debug.Log(transform.name);
+        }        
     }
 }
