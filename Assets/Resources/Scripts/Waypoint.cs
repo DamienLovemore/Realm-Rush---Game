@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Waypoint : MonoBehaviour
 {
+    [SerializeField] private GameObject towerPrefab;
     [Tooltip("Determines if this tile is allowed to build a tower")]
     [SerializeField] private bool isPlaceable;
 
@@ -13,7 +14,10 @@ public class Waypoint : MonoBehaviour
     {
         if(this.isPlaceable)
         {
-            Debug.Log(transform.name);
+            Instantiate(towerPrefab, this.transform.position, Quaternion.identity);
+            //Prevents from placing the tower twice in
+            //the same location
+            this.isPlaceable = false;
         }        
     }
 }
