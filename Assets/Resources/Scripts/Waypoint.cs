@@ -7,6 +7,8 @@ public class Waypoint : MonoBehaviour
     [SerializeField] private GameObject towerPrefab;
     [Tooltip("Determines if this tile is allowed to build a tower")]
     [SerializeField] private bool isPlaceable;
+    //Property that is used to return or set a private variable
+    public bool IsPlaceable{get{return isPlaceable;}}
 
     //Event that happens when the player clicks on the game object that
     //this script is attached to

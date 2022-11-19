@@ -7,12 +7,19 @@ using TMPro;
 [ExecuteAlways]
 public class CoordinateLabel : MonoBehaviour
 {
+    [SerializeField] private Color32 defaultColor = Color.white;
+    [SerializeField] private Color32 blockedColor = Color.gray;
+
     private TextMeshPro displayLabel;
     private Vector2Int coordinates = new Vector2Int();
+    private Waypoint waypoint;
 
     void Awake() 
     {
         this.displayLabel = GetComponent<TextMeshPro>();
+        this.displayLabel.enabled = false;
+
+        this.waypoint = GetComponentInParent<Waypoint>();
         this.DisplayCoordinates();
     }
 
@@ -24,6 +31,31 @@ public class CoordinateLabel : MonoBehaviour
         {
             this.DisplayCoordinates();
             this.UpdateObjectName();
+        }
+
+        this.ColorCoordinates();
+        this.ToggleCoordinatesLabels();
+    }
+
+    //When the player press the debug key (letter C) it should toggle
+    //coordinates labels visibility
+    private void ToggleCoordinatesLabels()
+    {        
+        if(Input.GetKeyDown(KeyCode.C))
+        {
+            this.displayLabel.enabled = this.displayLabel.IsActive();
+        }
+    }
+
+    private void ColorCoordinates()
+    {
+        if(waypoint.IsPlaceable)
+        {
+            this.displayLabel.color = this.defaultColor;
+        }
+        else
+        {
+            this.displayLabel.color = this.blockedColor;
         }
     }
 

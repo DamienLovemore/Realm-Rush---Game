@@ -18,7 +18,6 @@ public class EnemyHealth : MonoBehaviour
     //it dies (is destroyed)
     void OnParticleCollision(GameObject other)
     {
-        Debug.Log("Sim @");
         this.TakeHit();
     }
 
