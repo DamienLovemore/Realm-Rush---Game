@@ -7,7 +7,7 @@ public class EnemyHealth : MonoBehaviour
     [SerializeField] private int maxHitPoints = 5;
     private int currentHitPoints;
     
-    void Start() 
+    void OnEnable() 
     {
         //Makes the current hit points value to be adjusted to
         //to the max health value that was set in the editor
@@ -28,10 +28,10 @@ public class EnemyHealth : MonoBehaviour
         //Takes damage
         this.currentHitPoints -= 1;
 
-        //Destroyes the enemy
+        //the enemy is set back to the object pool
         if (this.currentHitPoints == 0)
         {
-            Destroy(this.gameObject);
+            this.gameObject.SetActive(false);
         }
     }
 }

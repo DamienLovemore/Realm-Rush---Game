@@ -10,8 +10,8 @@ public class EnemyMover : MonoBehaviour
 
     private List<Waypoint> path = new List<Waypoint>();
 
-    void Start()
-    {
+    void OnEnable()
+    {        
         //Finds all the path to follow
         this.FindPath();
         //Teleport them to the first tile of the path
@@ -24,6 +24,9 @@ public class EnemyMover : MonoBehaviour
     //manually in the editor, by SerializeField.
     private void FindPath()
     {
+        //Clears the path, so the enemy can start to walk all over again
+        this.path.Clear();
+
         //The object that have all the children path inside it
         //(Instead of finding all paths with the same tag cause 
         //you cannot be sure if it will return in the same order)
@@ -72,7 +75,8 @@ public class EnemyMover : MonoBehaviour
             }            
         }
 
-        //After following all the path, the enemy disappears
-        Destroy(this.gameObject);
+        //After following all the path, the enemy is set back
+        //to the object pool
+        this.gameObject.SetActive(false);
     }
 }
