@@ -75,8 +75,13 @@ public class EnemyMover : MonoBehaviour
             }            
         }
 
+        //Steals the player gold if the enemy has reached the
+        //end of the path
+        Enemy enemyPenalty = this.gameObject.GetComponent<Enemy>();
+        enemyPenalty.StealGold();
+
         //After following all the path, the enemy is set back
         //to the object pool
-        this.gameObject.SetActive(false);
+        this.gameObject.SetActive(false);        
     }
 }

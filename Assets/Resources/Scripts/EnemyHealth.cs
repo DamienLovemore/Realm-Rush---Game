@@ -5,7 +5,9 @@ using UnityEngine;
 public class EnemyHealth : MonoBehaviour
 {
     [SerializeField] private int maxHitPoints = 5;
+
     private int currentHitPoints;
+    private  Enemy enemyPenalty;
     
     void OnEnable() 
     {
@@ -14,6 +16,11 @@ public class EnemyHealth : MonoBehaviour
         this.currentHitPoints = this.maxHitPoints;
     }
     
+    void Start()
+    {
+        this.enemyPenalty = GetComponent<Enemy>();
+    }
+
     //When a arrow collides with this enemy, it takes hit until
     //it dies (is destroyed)
     void OnParticleCollision(GameObject other)
@@ -32,6 +39,7 @@ public class EnemyHealth : MonoBehaviour
         if (this.currentHitPoints == 0)
         {
             this.gameObject.SetActive(false);
+            this.enemyPenalty.RewardGold();
         }
     }
 }

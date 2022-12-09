@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Waypoint : MonoBehaviour
 {
-    [SerializeField] private GameObject towerPrefab;
+    [SerializeField] private Tower towerHandler;
     [Tooltip("Determines if this tile is allowed to build a tower")]
     [SerializeField] private bool isPlaceable;
     //Property that is used to return or set a private variable
@@ -16,10 +16,9 @@ public class Waypoint : MonoBehaviour
     {
         if(this.isPlaceable)
         {
-            Instantiate(towerPrefab, this.transform.position, Quaternion.identity);
-            //Prevents from placing the tower twice in
-            //the same location
-            this.isPlaceable = false;
+            bool isPlaced = towerHandler.CreateTower(towerHandler, this.transform.position);            
+            //Prevents from placing the tower twice in the same location
+            this.isPlaceable = !isPlaced;
         }        
     }
 }
