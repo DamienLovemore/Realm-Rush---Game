@@ -45,4 +45,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textGoldBalance: {fileID: 0}
-  startingBalance: 500
+  startingBalance: 250
