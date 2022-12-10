@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class Bank : MonoBehaviour
 {
+    [SerializeField] private TextMeshProUGUI textGoldBalance;
     [SerializeField] private int startingBalance = 150;
 
     private int currentBalance;
@@ -15,6 +17,14 @@ public class Bank : MonoBehaviour
     void Awake()
     {
         this.currentBalance = this.startingBalance;
+        //Shows the current amount of gold in the game
+        //HUD
+        this.UpdateGoldDisplay();
+    }
+
+    private void UpdateGoldDisplay()
+    {
+        this.textGoldBalance.text = "Gold: " + this.currentBalance;
     }
 
     public void Deposit(int amount)
@@ -23,6 +33,8 @@ public class Bank : MonoBehaviour
         amount = Mathf.Abs(amount);
 
         this.currentBalance += amount;
+
+        this.UpdateGoldDisplay();
     }
 
     public void Withdraw(int amount)
@@ -30,6 +42,8 @@ public class Bank : MonoBehaviour
         amount = Mathf.Abs(amount);
 
         this.currentBalance -= amount;
+
+        this.UpdateGoldDisplay();
 
         //If the player reaches a negative balance,
         //triggers game over
@@ -40,7 +54,7 @@ public class Bank : MonoBehaviour
 
             //Realoads this scene (realoads the game)
             SceneManager.LoadScene(currentScene.buildIndex);
-        }
+        }        
     }
 
     public int GetCurrentBalance()
