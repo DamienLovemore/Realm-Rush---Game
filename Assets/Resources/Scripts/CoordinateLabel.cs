@@ -32,6 +32,7 @@ public class CoordinateLabel : MonoBehaviour
         {
             this.DisplayCoordinates();
             this.UpdateObjectName();
+            this.displayLabel.enabled = true;
         }
 
         this.SetLabelColor();

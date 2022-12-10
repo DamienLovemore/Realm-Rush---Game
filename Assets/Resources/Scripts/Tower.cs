@@ -20,6 +20,7 @@ public class Tower : MonoBehaviour
         int currentBalance = bankSystem.GetCurrentBalance();
         if (currentBalance >= this.cost)
         {
+            bankSystem.Withdraw(this.cost);
             Instantiate(tower.gameObject, position, Quaternion.identity);
             return true;
         }
