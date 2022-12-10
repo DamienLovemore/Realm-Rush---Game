@@ -1383,7 +1383,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textGoldBalance: {fileID: 1856769504}
-  startingBalance: 150
+  startingBalance: 500
 --- !u!1001 &1725234037
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1993,7 +1993,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 5040643765344069697, guid: b940df629b09f434dbb9fd487257db6c, type: 3}
-  poolSize: 3
+  poolSize: 5
   spawnTimer: 1
 --- !u!1001 &1958132421
 PrefabInstance:
