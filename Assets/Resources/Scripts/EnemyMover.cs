@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Enemy))]
 public class EnemyMover : MonoBehaviour
 {
     [Header("Movement")]
@@ -9,6 +10,7 @@ public class EnemyMover : MonoBehaviour
     [SerializeField][Range(0, 5f)] private float movementSpeed = 1f;
 
     private List<Waypoint> path = new List<Waypoint>();
+    private Enemy enemyPenalty;
 
     void OnEnable()
     {        
@@ -18,6 +20,11 @@ public class EnemyMover : MonoBehaviour
         this.ReturnToStart();
         //Starts following the path until the end
         StartCoroutine(this.FollowPath());
+    }
+
+    void Start()
+    {
+        this.enemyPenalty = this.gameObject.GetComponent<Enemy>();
     }
 
     //Find the path for the enemy to follow whithout us having to set it
@@ -44,6 +51,18 @@ public class EnemyMover : MonoBehaviour
     private void ReturnToStart()
     {
         transform.position = this.path[0].transform.position;
+    }
+
+    //Function that do the actions when the enemy has passed
+    //the path
+    private void FinishPath()
+    {
+        //Steals the player gold if the enemy has reached the
+        //end of the path
+        this.enemyPenalty.StealGold();
+        //After following all the path, the enemy is set back
+        //to the object pool
+        this.gameObject.SetActive(false);
     }
 
     //Function used for the enemy movement between the tiles
@@ -75,13 +94,6 @@ public class EnemyMover : MonoBehaviour
             }            
         }
 
-        //Steals the player gold if the enemy has reached the
-        //end of the path
-        Enemy enemyPenalty = this.gameObject.GetComponent<Enemy>();
-        enemyPenalty.StealGold();
-
-        //After following all the path, the enemy is set back
-        //to the object pool
-        this.gameObject.SetActive(false);        
+        this.FinishPath();
     }
 }

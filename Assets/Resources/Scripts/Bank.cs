@@ -37,6 +37,15 @@ public class Bank : MonoBehaviour
         this.UpdateGoldDisplay();
     }
 
+    private void GameOver()
+    {
+        //Gets the actual scene that the game is
+        Scene currentScene = SceneManager.GetActiveScene();
+
+        //Realoads this scene (realoads the game)
+        SceneManager.LoadScene(currentScene.buildIndex);
+    }
+
     public void Withdraw(int amount)
     {
         amount = Mathf.Abs(amount);
@@ -49,11 +58,7 @@ public class Bank : MonoBehaviour
         //triggers game over
         if(this.currentBalance < 0)
         {
-            //Gets the actual scene that the game is
-            Scene currentScene = SceneManager.GetActiveScene();
-
-            //Realoads this scene (realoads the game)
-            SceneManager.LoadScene(currentScene.buildIndex);
+            this.GameOver();
         }        
     }
 

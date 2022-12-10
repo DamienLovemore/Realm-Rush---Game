@@ -5,6 +5,7 @@ using TMPro;
 
 //Makes the script run in the play mode and in the editor mode as well.
 [ExecuteAlways]
+[RequireComponent(typeof(TextMeshPro))]
 public class CoordinateLabel : MonoBehaviour
 {
     [SerializeField] private Color32 defaultColor = Color.white;
@@ -33,7 +34,7 @@ public class CoordinateLabel : MonoBehaviour
             this.UpdateObjectName();
         }
 
-        this.ColorCoordinates();
+        this.SetLabelColor();
         this.ToggleCoordinatesLabels();
     }
 
@@ -47,7 +48,7 @@ public class CoordinateLabel : MonoBehaviour
         }
     }
 
-    private void ColorCoordinates()
+    private void SetLabelColor()
     {
         if(waypoint.IsPlaceable)
         {
