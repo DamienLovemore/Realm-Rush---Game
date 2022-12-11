@@ -10,17 +10,20 @@ public class CoordinateLabel : MonoBehaviour
 {
     [SerializeField] private Color32 defaultColor = Color.white;
     [SerializeField] private Color32 blockedColor = Color.gray;
+    [SerializeField] private Color32 exploredColor = Color.yellow;
+    [SerializeField] private Color32 pathColor = new Color32(255, 127, 0, 255);
 
     private TextMeshPro displayLabel;
     private Vector2Int coordinates = new Vector2Int();
-    private Waypoint waypoint;
+    private GridManager gridManager;
 
     void Awake() 
     {
+        this.gridManager = FindObjectOfType<GridManager>();
+
         this.displayLabel = GetComponent<TextMeshPro>();
         this.displayLabel.enabled = false;
-
-        this.waypoint = GetComponentInParent<Waypoint>();
+        
         this.DisplayCoordinates();
     }
 
@@ -45,19 +48,47 @@ public class CoordinateLabel : MonoBehaviour
     {        
         if(Input.GetKeyDown(KeyCode.C))
         {
-            this.displayLabel.enabled = this.displayLabel.IsActive();
+            this.displayLabel.enabled = !this.displayLabel.IsActive();
         }
     }
 
     private void SetLabelColor()
     {
-        if(waypoint.IsPlaceable)
-        {
-            this.displayLabel.color = this.defaultColor;
-        }
-        else
+        //If there is no grid(tile) manager then it cannot
+        //change the labels colors
+        if(this.gridManager == null)
+            return;
+
+        //Gets the node(tile) of this coordinate that
+        //contains its info
+        Node node = gridManager.GetNode(this.coordinates);
+        //If it did not find the coordinate then leave
+        if (node == null)
+            return;
+
+        //Sets the color of the tile accordinly to the
+        //to its property following a set priority
+
+        //If the tile is not walkable
+        if(!node.isWalkable)
         {
             this.displayLabel.color = this.blockedColor;
+        }
+        //If the tile is part of the path
+        else if(node.isPath)
+        {
+            this.displayLabel.color = this.pathColor;
+        }
+        //If the tile has already been explored by enemies
+        else if (node.isExplored)
+        {
+            this.displayLabel.color = this.exploredColor;
+        }
+        //Normal color if it all the other priorities did
+        //not match
+        else
+        {
+            this.displayLabel.color = this.defaultColor;
         }
     }
 
