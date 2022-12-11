@@ -13,6 +13,18 @@ public class GridManager : MonoBehaviour
         this.CreateGrid();
     }
 
+    public Node GetNode(Vector2Int coordinates)
+    {
+        //Verify if a node if this coordinates exists
+        //(Key exists in the dictionary)
+        if(grid.ContainsKey(coordinates))
+        {
+            return grid[coordinates];
+        }
+
+        return null;        
+    }
+
     private void CreateGrid()
     {
         //Go through all the tiles of the game
