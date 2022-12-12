@@ -10,12 +10,14 @@ public class Tile : MonoBehaviour
     //Property that is used to return or set a private variable
     public bool IsPlaceable{get{return isPlaceable;}}
 
-    private GridManager gridManager;
     private Vector2Int coordinates = new Vector2Int();
-
+    private GridManager gridManager;
+    private Pathfinder pathfinder;
+    
     void Awake() 
     {
-        this.gridManager = FindObjectOfType<GridManager>();    
+        this.gridManager = FindObjectOfType<GridManager>();
+        this.pathfinder = FindObjectOfType<Pathfinder>();    
     }
 
     void Start() 
@@ -39,11 +41,16 @@ public class Tile : MonoBehaviour
     //this script is attached to
     void OnMouseDown()
     {
-        if(this.isPlaceable)
+        //Verifies if this Node(tile) is not blocked, and that it will
+        //not block the path of the enemies if a tower is placed here
+        if((this.gridManager.GetNode(this.coordinates).isWalkable) && (!this.pathfinder.WillBlockPath(this.coordinates)))
         {
             bool isPlaced = towerHandler.CreateTower(towerHandler, this.transform.position);            
             //Prevents from placing the tower twice in the same location
             this.isPlaceable = !isPlaced;
+
+            //Mark that this Node is not available to place towers
+            this.gridManager.BlockNode(this.coordinates);
         }        
     }
 }

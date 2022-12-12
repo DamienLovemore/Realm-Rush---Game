@@ -9,8 +9,10 @@ public class EnemyMover : MonoBehaviour
     [Tooltip("How fast this enemy can move")]
     [SerializeField][Range(0, 5f)] private float movementSpeed = 1f;
 
-    private List<Tile> path = new List<Tile>();
+    private List<Node> path = new List<Node>();
     private Enemy enemyPenalty;
+    private GridManager gridManager;
+    private Pathfinder pathfinder;
 
     void OnEnable()
     {        
@@ -22,35 +24,26 @@ public class EnemyMover : MonoBehaviour
         StartCoroutine(this.FollowPath());
     }
 
-    void Start()
+    void Awake()
     {
         this.enemyPenalty = this.gameObject.GetComponent<Enemy>();
+        this.gridManager = FindObjectOfType<GridManager>();
+        this.pathfinder = FindObjectOfType<Pathfinder>();
     }
 
     //Find the path for the enemy to follow whithout us having to set it
-    //manually in the editor, by SerializeField.
+    //manually in the editor by SerializeField.
     private void FindPath()
     {
         //Clears the path, so the enemy can start to walk all over again
         this.path.Clear();
-
-        //The object that have all the children path inside it
-        //(Instead of finding all paths with the same tag cause 
-        //you cannot be sure if it will return in the same order)
-        GameObject pathFather = GameObject.FindGameObjectWithTag("Path");
-        Tile[] waypointsChildren = pathFather.GetComponentsInChildren<Tile>();
-        
-        //Adds all the path found for the enemy to follow later
-        foreach(Tile waypoint in waypointsChildren)
-        {            
-            path.Add(waypoint);
-        }
+        this.path = this.pathfinder.GetNewPath();        
     }
 
-    //Makes the enemy to appear in the first path position
+    //Makes the enemy to appear in the start position
     private void ReturnToStart()
     {
-        transform.position = this.path[0].transform.position;
+        this.transform.position = this.gridManager.GetPositionFromCoordinates(this.pathfinder.StartCoordinates);
     }
 
     //Function that do the actions when the enemy has passed
@@ -68,11 +61,11 @@ public class EnemyMover : MonoBehaviour
     //Function used for the enemy movement between the tiles
     private IEnumerator FollowPath()
     {
-        foreach (Tile waypoint in this.path)
+        for(int cont = 0;cont < this.path.Count; cont++)
         {
             //Calculates where the enemy is going to move into
             Vector3 startPosition = this.transform.position;
-            Vector3 endPosition = waypoint.transform.position;
+            Vector3 endPosition = this.gridManager.GetPositionFromCoordinates(this.path[cont].coordinates);
 
             //Where in the movement is the enemy starting (Between the two
             //points;0 is start and 1 is the end position)

@@ -30,6 +30,18 @@ public class GridManager : MonoBehaviour
         return null;        
     }
 
+    //Clears the isExplored, and connectTo information from all Nodes
+    //Allowing a new path to be found for the enemies to use
+    public void ResetNodes()
+    {
+        foreach (KeyValuePair<Vector2Int, Node> entry in this.grid)
+        {
+            entry.Value.connectedTo = null;
+            entry.Value.isExplored = false;
+            entry.Value.isPath = false;    
+        }
+    }
+
     //If a Node if the coordinates passed exists them block
     //that Node from being walkable.
     public void BlockNode(Vector2Int coordinates)

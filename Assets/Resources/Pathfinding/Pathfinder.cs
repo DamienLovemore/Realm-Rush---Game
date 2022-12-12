@@ -5,7 +5,10 @@ using UnityEngine;
 public class Pathfinder : MonoBehaviour
 {
     [SerializeField] private Vector2Int startCoordinates;
+    public Vector2Int StartCoordinates { get{return this.startCoordinates;}}
+
     [SerializeField] private Vector2Int destinationCoordinates;
+    public Vector2Int DestinationCoordinates { get{return this.destinationCoordinates;}}
     
     //The initial tile
     private Node startNode;
@@ -32,20 +35,32 @@ public class Pathfinder : MonoBehaviour
         if(this.gridManager != null)
         {
             this.grid = this.gridManager.Grid;
+
+            //Gets the start and end node(tiles) from the grid manager
+            //(it already generated all the nodes for the coordinate)
+            this.startNode = this.gridManager.Grid[this.startCoordinates];
+            this.destinationNode = this.gridManager.Grid[this.destinationCoordinates];
         }
     }
 
     void Start()
     {
-        //Gets the start and end node(tiles) from the grid manager
-        //(it already generated all the nodes for the coordinate)
-        this.startNode = this.gridManager.Grid[this.startCoordinates];
-        this.destinationNode = this.gridManager.Grid[this.destinationCoordinates];
+        this.GetNewPath();
+    }
+
+    //Buils a new path to be used by the enemies to get to the
+    //destination. Considering that it must find the shortest
+    //path, and avoid blocked Nodes(tiles).
+    public List<Node> GetNewPath()
+    {
+        //Resets the information marked on the nodes about
+        //which path the enemies should use
+        this.gridManager.ResetNodes();
 
         //Generates the search tree for all the tiles
         this.BreadthFirstSearch();
         //Build the path that the enemy should follow
-        this.BuildPath();
+        return this.BuildPath();
     }
 
     //Gets all the neighbors of the current node to explore
@@ -90,6 +105,15 @@ public class Pathfinder : MonoBehaviour
     //and the paths
     private void BreadthFirstSearch()
     {
+        //Makes the start and end nodes to be available for
+        //the path, but not for placing towers
+        this.startNode.isWalkable = true;
+        this.destinationNode.isWalkable = true;
+
+        //Clears the previous found path to create the new one
+        this.frontier.Clear();
+        this.reached.Clear();
+
         //Tells that it is trying to find the path
         bool isRunning = true;
 
@@ -97,8 +121,7 @@ public class Pathfinder : MonoBehaviour
         frontier.Enqueue(startNode);
         reached.Add(startCoordinates, startNode);
 
-
-        while(frontier.Count > 0 && isRunning)
+        while((frontier.Count > 0) && (isRunning))
         {
             //Gets the current tile that it is
             this.currentSearchNode = frontier.Dequeue();
@@ -147,5 +170,35 @@ public class Pathfinder : MonoBehaviour
         path.Reverse();
 
         return path;
+    }
+
+    //Verifies if the new path generated was not able to find
+    //the path to the destination.
+    //True means it was not able to find.
+    public bool WillBlockPath(Vector2Int coordinates)
+    {
+        Node pathNode = this.gridManager.GetNode(coordinates);
+
+        if (pathNode != null)
+        {
+            bool previousState = pathNode.isWalkable;
+
+            //Set this Node(tile) as blocked to verify if this
+            //does not result in blocking the enemies path
+            pathNode.isWalkable = false;
+            List<Node> newPath = this.GetNewPath();
+            pathNode.isWalkable = previousState;
+
+            //If the new path was not able to advance more
+            //then 1 Node(tile) means that the path is blocked
+            if(newPath.Count <= 1)
+            {
+                //Generates a new path for the enemies to use
+                this.GetNewPath();
+                return true;
+            }
+        }
+
+        return false;
     }
 }
