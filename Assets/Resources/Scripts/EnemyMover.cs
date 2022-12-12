@@ -9,7 +9,7 @@ public class EnemyMover : MonoBehaviour
     [Tooltip("How fast this enemy can move")]
     [SerializeField][Range(0, 5f)] private float movementSpeed = 1f;
 
-    private List<Waypoint> path = new List<Waypoint>();
+    private List<Tile> path = new List<Tile>();
     private Enemy enemyPenalty;
 
     void OnEnable()
@@ -38,10 +38,10 @@ public class EnemyMover : MonoBehaviour
         //(Instead of finding all paths with the same tag cause 
         //you cannot be sure if it will return in the same order)
         GameObject pathFather = GameObject.FindGameObjectWithTag("Path");
-        Waypoint[] waypointsChildren = pathFather.GetComponentsInChildren<Waypoint>();
+        Tile[] waypointsChildren = pathFather.GetComponentsInChildren<Tile>();
         
         //Adds all the path found for the enemy to follow later
-        foreach(Waypoint waypoint in waypointsChildren)
+        foreach(Tile waypoint in waypointsChildren)
         {            
             path.Add(waypoint);
         }
@@ -68,7 +68,7 @@ public class EnemyMover : MonoBehaviour
     //Function used for the enemy movement between the tiles
     private IEnumerator FollowPath()
     {
-        foreach (Waypoint waypoint in this.path)
+        foreach (Tile waypoint in this.path)
         {
             //Calculates where the enemy is going to move into
             Vector3 startPosition = this.transform.position;

@@ -95,11 +95,14 @@ public class CoordinateLabel : MonoBehaviour
     //Calculates the coordinates for this tile object and display it
     private void DisplayCoordinates()
     {
+        if(this.gridManager == null)
+            return;
+
         //Calculates the coordinate for this tile (Divides by the snap move value,
         //so it display 0,1 instead of 0, 10 with 10 in the move for snap settings)
-        coordinates.x = Mathf.RoundToInt(this.transform.parent.position.x / UnityEditor.EditorSnapSettings.move.x);
+        coordinates.x = Mathf.RoundToInt(this.transform.parent.position.x / this.gridManager.UnityGridSize);
         //Uses z instead of y, because y is up and down not front or back
-        coordinates.y = Mathf.RoundToInt(this.transform.parent.position.z / UnityEditor.EditorSnapSettings.move.z);
+        coordinates.y = Mathf.RoundToInt(this.transform.parent.position.z / this.gridManager.UnityGridSize);
 
         this.displayLabel.text = $"{this.coordinates.x},{this.coordinates.y}";
     }
