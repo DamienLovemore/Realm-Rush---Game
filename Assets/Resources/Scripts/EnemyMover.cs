@@ -15,13 +15,11 @@ public class EnemyMover : MonoBehaviour
     private Pathfinder pathfinder;
 
     void OnEnable()
-    {        
-        //Finds all the path to follow
-        this.RecalculatePath();
+    {
         //Teleport them to the first tile of the path
-        this.ReturnToStart();
-        //Starts following the path until the end
-        StartCoroutine(this.FollowPath());
+        this.ReturnToStart();        
+        //Finds all the path to follow
+        this.RecalculatePath(true);
     }
 
     void Awake()
@@ -33,11 +31,23 @@ public class EnemyMover : MonoBehaviour
 
     //Find the path for the enemy to follow whithout us having to set it
     //manually in the editor by SerializeField.
-    private void RecalculatePath()
-    {
+    private void RecalculatePath(bool resetPath)
+    {  
+        Vector2Int coordinates  = new Vector2Int();
+
+        if(resetPath)
+            coordinates = this.pathfinder.StartCoordinates;
+        else
+            coordinates = this.gridManager.GetCoordinatesFromPosition(this.transform.position);
+
+        //Stops the enemies from following the path until the new path
+        //calculation is complete
+        StopAllCoroutines();
         //Clears the path, so the enemy can start to walk all over again
         this.path.Clear();
-        this.path = this.pathfinder.GetNewPath();        
+        this.path = this.pathfinder.GetNewPath(coordinates);
+        //Starts following the path until the end
+        StartCoroutine(this.FollowPath());        
     }
 
     //Makes the enemy to appear in the start position
@@ -61,7 +71,10 @@ public class EnemyMover : MonoBehaviour
     //Function used for the enemy movement between the tiles
     private IEnumerator FollowPath()
     {
-        for(int cont = 0;cont < this.path.Count; cont++)
+        //It starts from 1 and not 0 so that that the enemies
+        //can begin going to the next tile in the path, not
+        //trying to go where they already are in the beginning.
+        for(int cont = 1;cont < this.path.Count; cont++)
         {
             //Calculates where the enemy is going to move into
             Vector3 startPosition = this.transform.position;

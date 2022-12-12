@@ -51,14 +51,27 @@ public class Pathfinder : MonoBehaviour
     //Buils a new path to be used by the enemies to get to the
     //destination. Considering that it must find the shortest
     //path, and avoid blocked Nodes(tiles).
+    //(This version considers the start of the road)
     public List<Node> GetNewPath()
+    {
+        //To avoid code repetition the version that goes from
+        //the start, pass the start coordinates to the version
+        //that considers the current coordinates
+        return GetNewPath(this.startCoordinates);
+    }
+
+    //Buils a new path to be used by the enemies to get to the
+    //destination. Considering that it must find the shortest
+    //path, and avoid blocked Nodes(tiles).
+    //(This version considers the current node as the start)
+    public List<Node> GetNewPath(Vector2Int currentCoordinates)
     {
         //Resets the information marked on the nodes about
         //which path the enemies should use
         this.gridManager.ResetNodes();
 
         //Generates the search tree for all the tiles
-        this.BreadthFirstSearch();
+        this.BreadthFirstSearch(currentCoordinates);
         //Build the path that the enemy should follow
         return this.BuildPath();
     }
@@ -103,7 +116,7 @@ public class Pathfinder : MonoBehaviour
 
     //Builds the tree that has all the conections of the tiles,
     //and the paths
-    private void BreadthFirstSearch()
+    private void BreadthFirstSearch(Vector2Int coordinates)
     {
         //Makes the start and end nodes to be available for
         //the path, but not for placing towers
@@ -118,8 +131,8 @@ public class Pathfinder : MonoBehaviour
         bool isRunning = true;
 
         //Begin exploring the initial node(tile)
-        frontier.Enqueue(startNode);
-        reached.Add(startCoordinates, startNode);
+        frontier.Enqueue(this.grid[coordinates]);
+        reached.Add(coordinates, this.grid[coordinates]);
 
         while((frontier.Count > 0) && (isRunning))
         {
@@ -208,6 +221,6 @@ public class Pathfinder : MonoBehaviour
         //Function that is called by BroadcastMessage so that every script
         //that has this function receives the update in the path (DontRequireReceiver
         //makes it be able to send messages, even if no one is receiving)
-        BroadcastMessage("RecalculatePath", SendMessageOptions.DontRequireReceiver);
+        BroadcastMessage("RecalculatePath", false, SendMessageOptions.DontRequireReceiver);
     }
 }
