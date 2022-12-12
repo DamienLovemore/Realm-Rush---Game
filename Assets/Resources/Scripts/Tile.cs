@@ -45,12 +45,14 @@ public class Tile : MonoBehaviour
         //not block the path of the enemies if a tower is placed here
         if((this.gridManager.GetNode(this.coordinates).isWalkable) && (!this.pathfinder.WillBlockPath(this.coordinates)))
         {
-            bool isPlaced = towerHandler.CreateTower(towerHandler, this.transform.position);            
-            //Prevents from placing the tower twice in the same location
-            this.isPlaceable = !isPlaced;
-
-            //Mark that this Node is not available to place towers
-            this.gridManager.BlockNode(this.coordinates);
+            bool isSuccesful = towerHandler.CreateTower(towerHandler, this.transform.position);            
+            
+            if(isSuccesful)
+            {
+                //Mark that this Node is not available to place towers
+                this.gridManager.BlockNode(this.coordinates);
+                this.pathfinder.NotifyReceivers();
+            }                
         }        
     }
 }

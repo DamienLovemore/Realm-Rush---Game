@@ -17,7 +17,7 @@ public class EnemyMover : MonoBehaviour
     void OnEnable()
     {        
         //Finds all the path to follow
-        this.FindPath();
+        this.RecalculatePath();
         //Teleport them to the first tile of the path
         this.ReturnToStart();
         //Starts following the path until the end
@@ -33,7 +33,7 @@ public class EnemyMover : MonoBehaviour
 
     //Find the path for the enemy to follow whithout us having to set it
     //manually in the editor by SerializeField.
-    private void FindPath()
+    private void RecalculatePath()
     {
         //Clears the path, so the enemy can start to walk all over again
         this.path.Clear();

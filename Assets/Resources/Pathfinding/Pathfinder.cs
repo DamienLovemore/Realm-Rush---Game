@@ -201,4 +201,13 @@ public class Pathfinder : MonoBehaviour
 
         return false;
     }
+
+    //Notify about the change in the path to all scripts
+    public void NotifyReceivers()
+    {
+        //Function that is called by BroadcastMessage so that every script
+        //that has this function receives the update in the path (DontRequireReceiver
+        //makes it be able to send messages, even if no one is receiving)
+        BroadcastMessage("RecalculatePath", SendMessageOptions.DontRequireReceiver);
+    }
 }
